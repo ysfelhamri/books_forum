@@ -3,19 +3,11 @@
         "src": "books_forum/wsgi.py",
         "use": "@vercel/python",
         "config": { "maxLambdaSize": "15mb" }
-        },
-        {
-            "src": "build_files.sh",
-            "use": "@vercel/static-build",
-            "config": {
-              "distDir": "staticfiles_build"
-            }
-        }
-    ],
+    }],
     "routes": [
         {
             "src": "/static/(.*)",
-            "dest": "public/static/$1"
+            "dest": "/public/stati/$1"
         },
         {
             "src": "/(.*)",
