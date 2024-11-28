@@ -1,17 +1,20 @@
 {
-    "builds": [{
-        "src": "books_forum/wsgi.py",
-        "use": "@vercel/python",
-        "config": { "maxLambdaSize": "15mb" }
-    }],
+    "version": 2,
+    "builds": [
+      {
+        "src": "manage.py",
+        "use": "@vercel/python"
+      }
+    ],
     "routes": [
-        {
-            "src": "/static/(.*)",
-            "dest": "/public/$1"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "books_forum/wsgi.py"
-        }
+      {
+        "src": "/static/(.*)",
+        "dest": "/public/$1"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/manage.py"
+      }
     ]
-}
+  }
+  
