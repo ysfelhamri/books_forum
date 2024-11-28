@@ -18,6 +18,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'books_forum.settings')
 
 application = get_wsgi_application()
 
+app = application
 
 
 def run_periodic_tasks():
