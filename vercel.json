@@ -6,10 +6,6 @@
     }],
     "routes": [
         {
-            "src": "/static/(.*)",
-            "dest": "/public/static/$1"
-        },
-        {
             "src": "/(.*)",
             "dest": "books_forum/wsgi.py"
         }
