@@ -1,0 +1,81 @@
+{% extends "books/base.html" %}
+{% block content %}
+<div class="container p-0">
+  <div class="pl-2 pt-2 pb-2 border-bottom border-dark" style="background-color: #353535;">
+    <h5 class="m-0">Top Books</h5>
+</div>
+<div class="container p-2">
+  {% for book in books %}
+  <div class="container p-0 pt-2 pb-2 border-bottom border-dark">
+    <div class="container p-0 pt-2 pb-2">
+      <div class="row m-0 p-0">
+        <div class="col-1 m-0 p-0 mr-3 d-flex justify-content-center align-content-center border-right border-dark">
+            <p class="score text-center p-0 pt-4 mt-2">#{{book.score_rank}}</p>
+        </div>
+        <div class="col-1 m-0 p-0 mr-2 ">
+            <img src="{{ book.cover.url }}" class="img-fluid" style="height: 90px; width:65px; object-fit: cover;" alt="{{ book.title }}">
+        </div>
+        <div class="col p-0 m-0">
+          <a href="{% url 'book-detail' book.id%}" class="title-link p-0 m-0">
+            <p class="m-0 block-content text-truncate" style="font-weight: 500; font-size: 18px;">{{ book.title }}</p>
+          </a>
+          <p class="m-0 pb-1 pt-1 font-weight-light card-info ">  
+            {{ book.get_status_display}} <span style="color: #444;">|</span>
+            {{ book.volumes|default_if_none:"?" }} Volumes, {{ book.chapters|default_if_none:"?" }} Chapters
+          </p>
+          <p class="m-0 pb-2 pt-1 font-weight-light card-info ">  
+            <strong>Popularity Rank:</strong> {{ book.popularity_rank }}
+          </p>
+        </div>
+        <div class="container col-1 p-0 m-0 d-flex justify-content-center align-content-center border-left border-dark">
+          <div class="border-dark p-2" style="width: 80px;">
+            <p class="m-0 badge badge-primary" style="width: 70px;">SCORE</p>
+            <p class="m-0 score text-center p-0 pt-2" style="width: 70px;">
+              {% if book.score == 0 %}
+                N/A
+              {% else %}
+                {{ book.score|floatformat:2 }}
+              {% endif %}
+            </p>
+            <p class="m-0 score p-0 text-center" style="width: 70px; font-size: 10px;">
+            {% if book.users == 0 %}
+              N/A
+            {% else %}
+              {{ book.users }} users
+            {% endif %}
+            </p>
+          </div>
+          </div>
+      </div>
+      </div>
+  </div>
+  {% endfor %}
+</div>
+<div class="container mt-4">
+  <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+          {% if books.has_previous %}
+          <li class="page-item">
+              <a class="page-link" href="?page={{ books.previous_page_number }}">Previous</a>
+          </li>
+          {% endif %}
+          {% for num in books.paginator.page_range %}
+          {% if books.number == num %}
+          <li class="page-item active">
+              <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+          </li>
+          {% else %}
+          <li class="page-item">
+              <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+          </li>
+          {% endif %}
+          {% endfor %}
+          {% if books.has_next %}
+          <li class="page-item">
+              <a class="page-link" href="?page={{ books.next_page_number }}">Next</a>
+          </li>
+          {% endif %}
+      </ul>
+  </nav>
+</div>
+{% endblock content %}

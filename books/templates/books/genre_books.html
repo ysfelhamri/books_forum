@@ -1,0 +1,67 @@
+{% extends "books/base.html" %}
+{% block content %}
+<div class="container p-0">
+    <div class="p-2 border-bottom border-dark" style="background-color: #353535;">
+        <h5 class="m-0">Books in the "{{ genre.name }}" Genre</h5>
+    </div>
+    <div class="row p-3" style="height: 100%;">
+        {% for book in books %}
+            <div class="col-md-4 mb-4">
+                <div class="p-2 border border-bottom-0 border-dark" style="background-color: #252525;">
+                    <p class="m-0 text-center font-weight-normal text-truncate" style="color: #5f63d4;">
+                        <a href="{% url 'book-detail' book.id %}" class="title-link">{{ book.title }}</a>
+                    </p>
+                </div>
+                <div class="p-2 border border-bottom-0 border-dark" style="background-color: #252525;">
+                    <p class="m-0 pb-1 text-center font-weight-light">
+                        {% for genre in book.genres.all %}
+                            <a href="{% url 'genre-books' genre.id %}" class="badge badge-dark"> {{ genre.name }} </a>
+                        {% endfor %}
+                    </p>
+                </div>
+                <a href="{% url 'book-detail' book.id %}" class="card-link">
+                    <div class="card">
+                        <img src="{{ book.cover.url }}" class="card-img-top" alt="{{ book.title }}">
+                        <div class="card-body">
+                            <div class="card-synopsis-container">
+                                <p class="m-0 pb-2 text-center font-weight-light card-info border-bottom border-dark">  
+                                    {{ book.get_status_display}} <span style="color: #444;">|</span>
+                                    {{ book.volumes|default_if_none:"?" }} Volumes, {{ book.chapters|default_if_none:"?" }} Chapters
+                                </p>
+                                <p class="card-synopsis mt-2">{{ book.synopsis }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="container mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if books.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ books.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+                {% for num in books.paginator.page_range %}
+                {% if books.number == num %}
+                <li class="page-item active">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+                {% if books.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ books.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock content %}

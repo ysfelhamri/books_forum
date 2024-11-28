@@ -1,0 +1,89 @@
+{% extends "books/book_base.html" %}
+{% load mathfilters %}
+{% block book_detail %}
+<div class="col-md-9 p-0 m-0">
+  <div class="container p-2">
+    <div class="d-flex border-bottom border-light">
+      <a href="{% url 'book-detail' book.id %}" class="detail-bar">Details</a>
+      <a href="{% url 'book-stats' book.id %}" class="detail-bar">Statistics</a>
+      <a href="{% url 'book-pictures' book.id %}" class="detail-bar">Pictures</a>
+      <a href="{% url 'book-characters' book.id %}" class="detail-bar">Characters</a>
+      <div class="detail-bar-selected">Reviews</div>
+      <a href="{% url 'book-recommendations' book.id %}" class="detail-bar">Recommendations</a>
+      <a href="{% url 'book-discussions' book.id %}" class="detail-bar">Discussions</a>
+    </div>
+  </div>
+  {% if reviews.count == 0 %}
+          <div class="container p-2">
+            <p class="block-content mt-1">No reviews yet.</p>
+          </div>
+    {% else %}
+    <div class="container p-2">
+        <div class="container p-0 m-0 d-flex justify-content-between">
+            <p class="m-0 block-title">Reviews</p>
+            <a href="{% url 'add-review' book.id %}" class="title-link mr-2" style="font-size: 13px;"><i class="fas fa-plus-circle"></i> Write a Review</a>
+          </div>
+          {% for review in reviews %}
+            <div class="container p-0 pt-2 pb-2 border-top border-dark">
+              <div class="container p-0 pt-2 pb-2">
+                <div class="row m-0 p-0">
+                  <div class="col-1 p-0 m-0">
+                    <a href="{% url 'user-profile' review.user.id %}" class="title-link p-0 m-0">
+                      <img src="{{ review.user.image.url }}" class="img-fluid" style="height: 70px; width:100%; object-fit: cover;" alt="{{ review.user.username }}">
+                      <p class="m-0 block-content text-center">{{ review.user.username }}</p>
+                    </a>
+                    <p class="m-0 block-content text-center" style="font-size: 10px;">{{ review.created_date|date:"jS F Y" }}</p>
+                  </div>
+                  <div class="container col ml-2 pl-2 border-left border-dark">
+                    <div class="container p-0 m-0 d-flex justify-content-between">
+                      {% if review.verdict == 0 %}
+                      <p class="m-0 badge badge-success">Recommended</p>
+                      {% elif review.verdict == 1 %}
+                      <p class="m-0 badge badge-warning text-white">Mixed Feelings</p>
+                      {% elif review.verdict == 2 %}
+                      <p class="m-0 badge badge-danger">Not Recommended</p>
+                      {% endif %}
+                      <p class="m-0 block-content"><span class="block-subtitle">Chapters Read on Review: </span>{{ review.chapters_read_on_review }}/{{ book.chapters }}</p>
+                    </div>
+                    <div style="font-size: 13px;">
+                      <p class="m-0 mt-2 block-content">{{ review.review|linebreaks }}</p>
+                    </div>
+                    {% if review.user == user %}
+                    <a href="{% url 'edit-review' book.id review.id %}" class="title-link m-0 float-right" style="font-size: 13px;">
+                      <i class="fas fa-edit"></i> Edit Review</a>
+                    {% endif %}
+                    </div>
+                </div>
+                </div>
+            </div>
+          {% endfor %}
+        </div> 
+<div class="container mt-4">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if reviews.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ reviews.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            {% for num in reviews.paginator.page_range %}
+            {% if reviews.number == num %}
+            <li class="page-item active">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if reviews.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ reviews.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+{% endblock book_detail %}

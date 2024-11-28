@@ -1,0 +1,45 @@
+{% extends "books/base.html" %}
+{% block content %}
+  <div class="container p-0">
+    <div class="pl-2 pt-2 pb-2 border-bottom border-dark" style="background-color: #353535;">
+      <h5 class="m-0">{{ user_profile.username }}'s Profile</h5>
+  </div>
+  <div class="container row m-0 p-0">
+    <div class="col-md-3 border-right border-dark p-0 m-0">
+      <div class="container m-0 p-2">
+        <img src="{{ user_profile.image.url }}" class="img-fluid" style="height: 350px; width: 100%; object-fit: cover;" alt="{{ user_profile.username }}">
+      </div>
+      {% if user_profile == request.user %}
+        <div class="container p-2">
+            <a href="{% url 'edit-profile' user.id %}" class="title-link m-0" style="font-size: 13px;"><i class="fas fa-edit"></i> Edit Profile</a>
+        </div>
+        {% endif %}
+        <div class="container p-2">
+            <p class="m-0 block-title">Information</p>
+            <div class="container mb-1 p-0 pt-2 border-top border-dark">
+              <p class="block-content"><span class="block-subtitle">Date Joined: </span>{{ user_profile.created_date|date:"jS F Y" }}</p>
+              {% if user_profile.birthday %}
+              <p class="block-content"><span class="block-subtitle">Birthday: </span>{{ user_profile.birthday|date:"jS F Y" }}</p>
+              {% endif %}
+              {% if user_profile.first_name %}
+              <p class="block-content"><span class="block-subtitle">First Name: </span>{{ user_profile.first_name }}</p>
+              {% endif %}
+              {% if user_profile.last_name %}
+              <p class="block-content"><span class="block-subtitle">Last Name: </span>{{ user_profile.last_name }}</p>
+              {% endif %}
+            </div>
+          </div>
+      <div class="container p-2">
+        <p class="m-0 block-title">Statistics</p>
+        <div class="container mb-1 p-0 border-top border-dark">
+          <a href="{% url 'user-reviews' user_profile.id %}" class="title-link"><p class="m-0 block-content mt-2" style="font-weight: 500;">Reviews: {{ user_profile.reviews.count }}</p></a>
+          <a href="{% url 'user-recommendations' user_profile.id %}" class="title-link"><p class="m-0 block-content mt-1" style="font-weight: 500;">Recommendations: {{ user_profile.recommendations.count }}</p></a>
+          <a href="{% url 'user-discussions' user_profile.id %}" class="title-link"><p class="m-0 block-content mt-1" style="font-weight: 500;">Discussions: {{ user_profile.discussions.count }}</p></a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9 p-0 m-0">
+        {% block user_detail %}{% endblock %}
+    </div>
+  </div>
+{% endblock content %}

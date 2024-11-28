@@ -1,0 +1,80 @@
+{% extends "books/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <div class="container p-0">
+    <div class="pl-2 pt-2 pb-2 border-bottom border-dark" style="background-color: #353535;">
+      <h5 class="m-0">{{ discussion.title }}</h5>
+  </div>
+  <div class="d-flex border-bottom border-dark justify-content-between m-2">
+    <a href="{% url 'book-detail' discussion.book.id %}" class="title-link" style="font-size: 13px;"><i class="fas fa-chevron-left"></i> {{ discussion.book.title }}</a>
+    {% if user.is_authenticated %}
+    <a href="#reply" class="title-link" style="font-size: 13px;"><i class="fas fa-plus-circle"></i> Add a Reply</a>
+    {% else %}
+    <a href="{% url 'login' %}" class="title-link" style="font-size: 13px;"><i class="fas fa-plus-circle"></i> Add a Reply</a>
+    {% endif %}
+  </div>
+  <div class="container m-0 p-2">
+    {% for reply in replies %}
+    <div class="container row m-0 p-1 border-bottom border-dark">
+      <div class="col-3 p-0 m-0 ">
+          <div class="container p-3 ">
+              <div class="row m-0 p-0">
+                  <a href="{% url 'user-profile' discussion.user.id %}" class="title-link col-4 p-0 m-0"><img src="{{ reply.user.image.url }}" class="img-fluid" style="height: 70px; width: 70px; object-fit: cover;" alt="{{ reply.user.username }}"></a>
+                  <div class="container col">
+                  <a href="{% url 'user-profile' discussion.user.id %}" class="title-link"><p class="m-0 block-content text-truncate">{{ reply.user.username }}</p></a>
+                  <p class="m-0 block-content" style="font-size: 10px;">{{ reply.created_date }}</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="col p-3 border-left border-dark" style="font-size: 13px;">
+        <p class="m-0">{{ reply.reply|linebreaks }}</p>
+      </div>
+      {% if reply.user == user %}
+      <a href="{% url 'edit-reply' discussion.book.id discussion.id reply.id %}" class="title-link m-0 float-right" style="font-size: 13px;">
+        <i class="fas fa-edit"></i> Edit Reply</a>
+      {% endif %}
+    </div>
+    {% endfor %}
+    {% if user.is_authenticated %}
+      <div class="pl-2 pt-2 pb-2 m-0 mt-2 border border-bottom-0 border-dark" style="background-color: #353535;">
+      <p class="m-0 text-center" id="reply">Add a Reply</p>
+      </div>
+      <div class="border border-dark p-3" style="background-color: #252525;;">
+      <form method="post" novalidate >
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-secondary mt-2"><i class="fas fa-plus-circle"></i> Add Reply</button>
+      </form>
+      </div>
+    {% else %}
+    
+    {% endif %}
+<div class="container mt-4">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if replies.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ replies.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            {% for num in replies.paginator.page_range %}
+            {% if replies.number == num %}
+            <li class="page-item active">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if replies.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ replies.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock content %}

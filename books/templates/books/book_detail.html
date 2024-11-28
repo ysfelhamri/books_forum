@@ -1,0 +1,347 @@
+{% extends "books/book_base.html" %}
+{% load mathfilters %}
+{% load crispy_forms_tags %}
+{% block book_detail %}
+<div class="col-md-9 p-0 m-0">
+  <div class="container p-2">
+    <div class="d-flex">
+      <div class="detail-bar-selected">Details</div>
+      <a href="{% url 'book-stats' book.id %}" class="detail-bar">Statistics</a>
+      <a href="{% url 'book-pictures' book.id %}" class="detail-bar">Pictures</a>
+      <a href="{% url 'book-characters' book.id %}" class="detail-bar">Characters</a>
+      <a href="{% url 'book-reviews' book.id %}" class="detail-bar">Reviews</a>
+      <a href="{% url 'book-recommendations' book.id %}" class="detail-bar">Recommendations</a>
+      <a href="{% url 'book-discussions' book.id %}" class="detail-bar">Discussions</a>
+    </div>
+    <div class="container p-0 pt-2 border-top border-light">
+      <div class="border border-dark p-2 d-flex" style="background-color: #202020; height: 90px;">
+        <div class="border-right border-dark pr-2" style="width: 80px;">
+          <p class="m-0 badge badge-primary" style="width: 70px;">SCORE</p>
+          <p class="m-0 score text-center p-0 pt-2" style="width: 70px;">
+            {% if book_stats.average_score == 0 %}
+              N/A
+            {% else %}
+              {{ book_stats.average_score|floatformat:2 }}
+            {% endif %}
+          </p>
+          <p class="m-0 score p-0 text-center" style="width: 70px; font-size: 10px;">
+            {% if book_stats.num_ratings == 0 %}
+              N/A
+            {% else %}
+              {{ book_stats.num_ratings }} users
+            {% endif %}
+            </p>
+        </div>
+        <div class="p-0 m-0 d-flex justify-content-center align-content-center" style="width: 100%; height: 100%; margin-left: 100px !important;">
+          <div class="container p-2 mr-3" style="width: max-content;">
+            <p style="font-size: 18px; width: max-content; margin-top: 15px;">Ranked <span style="font-weight: 500;">
+              {% if book_stats.score_rank == 0 %}
+                N/A
+              {% else %}
+                #{{ book_stats.score_rank }}
+              {% endif %}
+            </span>
+            </p>
+          </div>  
+          <div class="container p-2 mr-3" style="width: max-content;">
+            <p style="font-size: 18px; margin-top: 15px; width: max-content;">Popularity <span style="font-weight: 500;">
+              {% if book_stats.popularity_rank == 0 %}
+                N/A
+              {% else %}
+                #{{ book_stats.popularity_rank }}
+              {% endif %}
+            </span>
+          </p>
+          </div>  
+          <div class="container p-2 mr-3" style="width: max-content;">
+            <p style="font-size: 18px; margin-top: 15px; width: max-content;">Total Members <span style="font-weight: 500;">
+              {% if book_stats.num_ratings == 0 %}
+                N/A
+              {% else %}
+                {{ book_stats.num_ratings }}
+              {% endif %}
+            </span>
+          </p>
+          </div>  
+          <div class="container p-2">
+            <a href="{% url 'book-stats' book.id %}" class="title-link float-right" style="font-size: 13px; margin-top: 50px;"><i class="fas fa-caret-down"></i> More Statistics</a>
+          </div>
+      </div>
+      </div>
+      <div class="border border-dark mt-2" style="background-color: #202020; height: 40px;">
+        <form method="post" action="{% url 'book-detail' book.pk %}" novalidate class="d-flex p-1" style="height: 100%;">
+          {% csrf_token %}
+          <button class="btn btn-secondary text-center p-1" type="submit" style="font-size: 13px; width: 125px;">
+              {% if form.instance.pk %}
+                  <i class="fas fa-edit"></i> Update
+              {% else %}
+                  <i class="fas fa-plus-circle text-white" style="font-size: 13px;"></i> Add a Rating
+              {% endif %}
+          </button>
+          <select id="status" name="status" class="rounded custom-input border border-dark ml-2" style="width: 125px; background-color: #353535;">
+            <option value="" selected disabled>Status</option>
+            {% for value, text in form.fields.status.choices %}
+              <option value="{{ value }}" {% if form.instance.status == value %}selected{% endif %}>{{ text }}</option>
+            {% endfor %}
+          </select>
+          <select id="score" name="score" class="rounded custom-input border border-dark ml-2" style="width: 125px; background-color: #353535;">
+              <option value="" selected disabled>Select a Score</option>
+              {% for value, text in form.fields.score.choices %}
+                  <option value="{{ value }}" {% if form.instance.score == value %}selected{% endif %}>{{ text }}</option>
+              {% endfor %}
+          </select>
+          <div class="container p-1 m-0 ml-2 border d-flex border-dark align-items-center rounded custom-input" style="width: 125px; background-color: #353535;">
+              <label for="chapters" class="m-0 p-0">Chapters</label>
+              <input id="chapters" type="number" class="m-0 ml-4 p-0 input-invis" name="chapters" style="width: 20px;" value="{{ form.instance.chapters|default:0 }}">
+              <p class="m-0 p-0">/{{ book.chapters }}</p>
+          </div>
+          <div class="container p-1 m-0 ml-2 d-flex border border-dark align-items-center rounded custom-input" style="width: 125px; background-color: #353535;">
+              <label for="volumes" class="m-0 p-0">Volumes</label>
+              <input id="volumes" type="number" class="m-0 ml-4 p-0 input-invis" name="volumes" style="width: 20px;" value="{{ form.instance.volumes|default:0 }}">
+              <p class="m-0 p-0">/{{ book.volumes }}</p>
+          </div>
+      </form>
+      
+      </div>
+    </div>
+  </div>
+  <div class="container p-2">
+    <p class="m-0 block-title">Synopsis</p>
+    <div class="container p-0 border-top border-dark">
+      {% if book.synopsis %}
+      <p class="mt-2 block-content">{{ book.synopsis }}</p>
+      {% else %}
+      <p class="mt-2 block-content">No synopsis added.</p>
+      {% endif %}
+    </div>
+  </div>
+  <div class="container p-2">
+    <p class="m-0 block-title">Background</p>
+    <div class="container p-0 border-top border-dark">
+      {% if book.background %}
+      <p class="mt-2 block-content">{{ book.background }}</p>
+      {% else %}
+      <p class="mt-2 block-content">No background information added.</p>
+      {% endif %}
+    </div>
+  </div>
+  <div class="container p-2">
+    <p class="m-0 block-title">Related Entries</p>
+    <div class="container p-0 border-top border-dark">
+      {% if relationships.count == 0 %}
+          <div class="container p-0 border-top border-dark">
+            <p class="block-content mt-1">No related books added.</p>
+          </div>
+      {% else %}
+      {% for relationship in relationships %}
+        <p class="mt-2 block-content">
+          <span class="block-subtitle text-white">{{ relationship.get_relationship_type_display }}: </span>
+          <a href="{% url 'book-detail' relationship.book_related.id %}" class="title-link">
+            {{ relationship.book_related.title }}
+          </a> 
+        </p>
+      {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="container p-2">
+    <p class="m-0 block-title">Characters</p>
+      <div class="row p-0 m-0 border-top border-dark">
+        {% if character_books.count == 0 %}
+          <div class="container p-0 border-top border-dark">
+            <p class="block-content mt-1">No characters added.</p>
+          </div>
+        </div>
+        {% else %}
+        {% if character_books.count == 1 %}
+        <div class="col p-0 m-0">
+            {% for character_book in character_books %}
+            <div class="container p-0 pt-3 pb-3">
+              <div class="row m-0 p-0 pl-2">
+                <a href="{% url 'character-detail' character_book.character.id %}" class="title-link col-1 p-0 m-0"><img src="{{ character_book.character.image.url }}" class="img-fluid" style="height: 70px; object-fit: cover;" alt="{{ character_book.character.name }}"></a>
+                <div class="container col">
+                <a href="{% url 'character-detail' character_book.character.id %}" class="title-link"><p class="m-0 block-content">{{ character_book.character.name }}</p></a>
+                <p class="m-0 block-content" style="font-size: 10px;">{{ character_book.get_character_role_display }}</p>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% else %}
+        <div class="col p-0 m-0">
+          {% for character_book in character_books %}
+          {% if forloop.counter <= ch_count %}
+          <div class="container p-0 pt-3 pb-3">
+            <div class="row m-0 p-0">
+              <a href="{% url 'character-detail' character_book.character.id %}" class="title-link col-2 p-0 m-0"><img src="{{ character_book.character.image.url }}" class="img-fluid" style="height: 70px; object-fit: cover;" alt="{{ character_book.character.name }}"></a>
+              <div class="container col">
+              <a href="{% url 'character-detail' character_book.character.id %}" class="title-link"><p class="m-0 block-content">{{ character_book.character.name }}</p></a>
+              <p class="m-0 block-content" style="font-size: 10px;">{{ character_book.get_character_role_display }}</p>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+      </div>
+      <div class="col p-0 m-0">
+          {% for character_book in character_books %}
+          {% if forloop.counter > ch_count %}
+          <div class="container p-0 pt-3 pb-3">
+            <div class="row m-0 p-0 pl-2 border-left border-dark">
+              <a href="{% url 'character-detail' character_book.character.id %}" class="title-link col-2 p-0 m-0"><img src="{{ character_book.character.image.url }}" class="img-fluid" style="height: 70px; object-fit: cover;" alt="{{ character_book.character.name }}"></a>
+              <div class="container col">
+              <a href="{% url 'character-detail' character_book.character.id %}" class="title-link"><p class="m-0 block-content">{{ character_book.character.name }}</p></a>
+              <p class="m-0 block-content" style="font-size: 10px;">{{ character_book.get_character_role_display }}</p>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      <p class="block-content text-weight-bold mb-5 pt-2 text-center border-top border-dark">
+        <a href="{% url 'book-characters' book.id %}" class="title-link m-0">
+          <i class="fas fa-caret-down"></i> More Characters
+        </a>
+      </p>
+      {% endif %}
+  </div>
+  <div class="container p-2">
+    <div class="container p-0 m-0 d-flex justify-content-between">
+      <p class="m-0 block-title">Reviews</p>
+      <a href="{% url 'add-review' book.id %}" class="title-link mr-2" style="font-size: 13px;"><i class="fas fa-plus-circle"></i> Write a Review</a>
+    </div>
+      {% if reviews.count == 0 %}
+      <div class="container p-0 border-top border-dark">
+        <p class="block-content mt-1">No reviews yet.</p>
+      </div>
+      {% else %}
+      {% for review in reviews %}
+        <div class="container p-0 pt-2 pb-2 border-top border-dark">
+          <div class="container p-0 pt-2 pb-2">
+            <div class="row m-0 p-0">
+              <div class="col-1 p-0 m-0">
+                <a href="{% url 'user-profile' review.user.id %}" class="title-link p-0 m-0">
+                  <img src="{{ review.user.image.url }}" class="img-fluid" style="height: 70px; width:100%; object-fit: cover;" alt="{{ review.user.username }}">
+                  <p class="m-0 block-content text-center">{{ review.user.username }}</p>
+                </a>
+                <p class="m-0 block-content text-center" style="font-size: 10px;">{{ review.created_date|date:"jS F Y" }}</p>
+              </div>
+              <div class="container col ml-2 pl-2 border-left border-dark">
+                <div class="container p-0 m-0 d-flex justify-content-between">
+                  {% if review.verdict == 0 %}
+                  <p class="m-0 badge badge-success">Recommended</p>
+                  {% elif review.verdict == 1 %}
+                  <p class="m-0 badge badge-warning text-white">Mixed Feelings</p>
+                  {% elif review.verdict == 2 %}
+                  <p class="m-0 badge badge-danger">Not Recommended</p>
+                  {% endif %}
+                  <p class="m-0 block-content"><span class="block-subtitle">Chapters Read on Review: </span>{{ review.chapters_read_on_review }}/{{ book.chapters }}</p>
+                </div>
+                <div style="font-size: 13px;">
+                  <p class="m-0 mt-2 block-content">{{ review.review|linebreaks }}</p>
+                </div>
+                {% if review.user == user %}
+                <a href="{% url 'edit-review' book.id review.id %}" class="title-link m-0 float-right" style="font-size: 13px;">
+                  <i class="fas fa-edit"></i> Edit Review</a>
+                {% endif %}
+                </div>
+            </div>
+            </div>
+        </div>
+      {% endfor %}
+        <p class="block-content text-weight-bold mb-5 pt-2 text-center border-top border-dark">
+          <a href="{% url 'book-reviews' book.id %}" class="title-link m-0">
+            <i class="fas fa-caret-down"></i> More Reviews
+          </a>
+        </p>
+      {% endif %}
+    </div>
+    <div class="container p-2">
+      <div class="container p-0 m-0 d-flex justify-content-between">
+        <p class="m-0 block-title">Recommendations</p>
+        <a href="{% url 'add-recommendation' book.id %}" class="title-link mr-2" style="font-size: 13px;"><i class="fas fa-plus-circle"></i> Write a Recommendation</a>
+      </div>
+        {% if recommendations.count == 0 %}
+        <div class="container p-0 border-top border-dark">
+          <p class="block-content mt-1">No recommendations yet.</p>
+        </div>
+        {% else %}
+        {% for recommendation in recommendations %}
+          <div class="container p-0 pt-2 pb-2 border-top border-dark">
+            <div class="container p-0 pt-2 pb-2">
+              <div class="row m-0 p-0">
+                <div class="col-1 p-0 m-0">
+                  <a href="{% url 'user-profile' recommendation.user.id %}" class="title-link p-0 m-0">
+                    <img src="{{ recommendation.user.image.url }}" class="img-fluid" style="height: 70px; width:100%; object-fit: cover;" alt="{{ recommendation.user.username }}">
+                    <p class="m-0 block-content text-center">{{ recommendation.user.username }}</p>
+                  </a>
+                  <p class="m-0 block-content text-center" style="font-size: 10px;">{{ recommendation.created_date|date:"jS F Y" }}</p>
+                </div>
+                <div class="container col ml-2 pl-2 border-left border-dark">
+                  <div class="row m-0 p-0">
+                    <a href="{% url 'book-detail' recommendation.book_recommended.id %}" class="title-link col-1 p-0 m-0"><img src="{{ recommendation.book_recommended.cover.url }}" class="img-fluid" style="height: 70px; object-fit: cover;" alt="{{ author_book.book.title }}"></a>
+                    <div class="container col">
+                    <a href="{% url 'book-detail' recommendation.book_recommended.id %}" class="title-link"><p class="m-0 block-content">{{ recommendation.book_recommended.title }}</p></a>
+                    <div style="font-size: 13px;">
+                      <p class="m-0 mt-2 pt-2 block-content border-top border-dark">{{ recommendation.recommendation|linebreaks }}</p>
+                    </div>
+                  </div>
+                  </div>
+                  {% if recommendation.user == user %}
+                  <a href="{% url 'edit-recommendation' book.id recommendation.id %}" class="title-link m-0 float-right" style="font-size: 13px;">
+                  <i class="fas fa-edit"></i> Edit Recommendation</a>
+                  {% endif %}
+                  </div>
+              </div>
+              </div>
+          </div>
+        {% endfor %}
+        <p class="block-content text-weight-bold mb-5 pt-2 text-center border-top border-dark">
+          <a href="{% url 'book-recommendations' book.id %}" class="title-link m-0">
+            <i class="fas fa-caret-down"></i> More Recommendations
+          </a>
+        </p>
+        {% endif %}
+      </div>
+      <div class="container p-2">
+        <div class="container p-0 m-0 d-flex justify-content-between">
+          <p class="m-0 block-title">Recent Discussions</p>
+          <a href="{% url 'add-discussion' book.id %}" class="title-link mr-2" style="font-size: 13px;"><i class="fas fa-plus-circle"></i> Create a Discussion</a>
+        </div>
+          {% if discussions.count == 0 %}
+          <div class="container p-0 border-top border-dark">
+            <p class="block-content mt-1">No discussions yet.</p>
+          </div>
+          {% else %}
+          {% for discussion in discussions %}
+            <div class="container p-0 pt-2 pb-2 border-top border-dark">
+              <div class="container p-0 pt-2 pb-2">
+                <div class="row m-0 p-0">
+                  <div class="col-1 m-0 p-0 mr-2 ">
+                      <img src="{{ book.cover.url }}" class="img-fluid" style="height: 45px; width:70px; object-fit: cover;" alt="{{ book.title }}">
+                  </div>
+                  <div class="col p-0 m-0">
+                    <a href="{% url 'discussion-detail' book.id discussion.id %}" class="title-link p-0 m-0">
+                      <p class="m-0 block-content text-truncate" style="font-weight: 500; font-size: 14px;">{{ discussion.title }}</p>
+                    </a>
+                    <p class="m-0 block-content text-white" style="font-size: 10px;"><a href="{% url 'user-profile' discussion.user.id %}" class="title-link p-0 m-0"> {{discussion.user.username}} </a>- {{ discussion.created_date|date:"jS F Y" }}</p>
+                  </div>
+                  <div class="container col-2 p-0 m-0 ml-2 border-left border-dark">
+                      <p class="m-0 mt-2 p-0 text-center" style="font-weight: 500; font-size: 14px;">{{ discussion.reply_count }} replies</p>
+                    </div>
+                </div>
+                </div>
+            </div>
+          {% endfor %}
+          <p class="block-content text-weight-bold mb-5 pt-2 text-center border-top border-dark">
+            <a href="{% url 'book-discussions' book.id %}" class="title-link m-0">
+              <i class="fas fa-caret-down"></i> More Discussions
+            </a>
+          </p>
+          {% endif %}
+        </div>
+{% endblock book_detail %}

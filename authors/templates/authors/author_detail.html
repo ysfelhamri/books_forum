@@ -1,0 +1,52 @@
+{% extends "books/base.html" %}
+{% block content %}
+  <div class="container p-0">
+    <div class="pl-2 pt-2 pb-2 border-bottom border-dark" style="background-color: #353535;">
+      <h5 class="m-0">{{ author.first_name }} {{ author.last_name }}</h5>
+        {% if author.alias %}
+          <span style="font-weight: 300 !important;">({{ author.alias }})</span>
+        {% endif %}
+      </h5>
+  </div>
+  <div class="row m-0 p-0" style="height: 100vh;">
+    <div class="col-md-3 border-right border-dark p-0 m-0">
+      <div class="container m-0 p-2">
+        <img src="{{ author.image.url }}" class="img-fluid" style="height: 350px; object-fit: cover;" alt="{{ author.first_name }} {{ author.last_name }}">
+      </div>
+      <div class="container p-2">
+        <p class="m-0 block-title">Information</p>
+        <div class="container mb-1 p-0 pt-2 border-top border-dark">
+          <p class="block-content"><span class="block-subtitle">First Name: </span>{{ author.first_name }}</p>
+          <p class="block-content"><span class="block-subtitle">Last Name: </span>{{ author.last_name }}</p>
+          {% if author.alias %}
+          <p class="block-content"><span class="block-subtitle">Alias: </span>{{ author.alias }}</p>
+          {% endif %}
+          {% if author.birthday %}
+          <p class="block-content"><span class="block-subtitle">Birth Date: </span>{{ author.birthday }}</p>
+          {% endif %}
+          {% if author.more_info %}
+          <p class="block-content"><span class="block-subtitle">More Info: </span>{{ author.more_info|linebreaks }}</a></p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9 p-0 m-0">
+      <div class="container p-2">
+        <p class="m-0 block-title">Published Books</p>
+        <div class="container p-0 border-top border-dark">
+          {% for author_book in author_books %}
+          <div class="container p-0 pt-3 pb-3">
+            <div class="row m-0 p-0">
+              <a href="{% url 'book-detail' author_book.book.id %}" class="title-link col-1 p-0 m-0"><img src="{{ author_book.book.cover.url }}" class="img-fluid" style="height: 70px; object-fit: cover;" alt="{{ author_book.book.title }}"></a>
+              <div class="container col">
+              <a href="{% url 'book-detail' author_book.book.id %}" class="title-link"><p class="m-0 block-content">{{ author_book.book.title }}</p></a>
+              <p class="m-0 block-content" style="font-size: 10px;">{{ author_book.get_author_role_display }}</p>
+              </div>
+            </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

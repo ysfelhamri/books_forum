@@ -1,0 +1,44 @@
+{% extends "books/base.html" %}
+{% block content %}
+  <div class="container p-0">
+    <div class="pl-2 pt-2 pb-2 border-bottom border-dark" style="background-color: #353535;">
+      <h5 class="m-0">{{ book.title }}</h5>
+  </div>
+  <div class="container row m-0 p-0">
+    <div class="col-md-3 border-right border-dark p-0 m-0">
+      <div class="container m-0 p-2">
+        <img src="{{ book.cover.url }}" class="" style="height: 350px; width: 100%; object-fit: cover;" alt="{{ book.title }}">
+      </div>
+      <div class="container p-2">
+        <p class="m-0 block-title">Information</p>
+        <div class="container mb-1 p-0 pt-2 border-top border-dark">
+          {%if book.alternative_titles %}
+          <p class="block-content"><span class="block-subtitle">Alternative Titles: </span>{{ book.alternative_titles}}</p>
+          {% endif %}
+          <p class="block-content"><span class="block-subtitle">Volumes: </span>{{ book.volumes|default_if_none:"?" }}</p>
+          <p class="block-content"><span class="block-subtitle">Chapters: </span>{{ book.chapters|default_if_none:"?" }}</p>
+          <p class="block-content"><span class="block-subtitle">Status: </span>{{ book.get_status_display }}</p>
+          <p class="block-content"><span class="block-subtitle">Published: </span>{{ book.publishing_start_date|default_if_none:"?" }} {% if book.publishing_start_date %} to {{ book.publishing_end_date|default_if_none:"?" }} {% endif %}</p>
+          <p class="block-content">
+            <span class="block-subtitle">Genres: </span>
+            {% for genre in book.genres.all %}
+              <a href="{% url 'genre-books' genre.id %}" class="title-link">{{ genre.name }}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+          </p>
+          <p class="block-content">
+            <span class="block-subtitle">Authors: </span>
+            {% if author_books.count == 0%}
+            Unknown
+            {% else %}
+            {% for author_book in author_books %}
+              <a href="{% url 'author-detail' author_book.author.id %}" class="title-link">{{ author_book.author.first_name }} {{ author_book.author.last_name }}</a> ({{ author_book.get_author_role_display }}){% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+    {% block book_detail%}{% endblock %}
+    </div>
+  </div>
+{% endblock content %}

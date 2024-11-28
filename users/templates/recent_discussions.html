@@ -1,0 +1,31 @@
+{% extends "books/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <div class="container p-0">
+    <div class="pl-2 pt-2 pb-2 border-bottom border-dark" style="background-color: #353535;">
+      <h5 class="m-0">Recent Discussions</h5>
+  </div>
+  <div class="container p-2">
+    {% for discussion in discussions %}
+    <div class="container p-0 pt-2 pb-2 border-top border-dark">
+      <div class="container p-0 pt-2 pb-2">
+        <div class="row m-0 p-0">
+          <div class="col-1 m-0 p-0 mr-2 ">
+              <img src="{{ discussion.book.cover.url }}" class="img-fluid" style="height: 60px; width:70px; object-fit: cover;" alt="{{ discussion.book.title }}">
+          </div>
+          <div class="col p-0 m-0">
+            <a href="{% url 'discussion-detail' discussion.book.id discussion.id %}" class="title-link p-0 m-0">
+              <p class="m-0 block-content text-truncate" style="font-weight: 500; font-size: 14px;">{{ discussion.title }}</p>
+            </a>
+            <p class="m-0 block-content text-white" style="font-size: 10px;"><a href="{% url 'user-profile' discussion.user.id %}" class="title-link p-0 m-0"> {{discussion.user.username}} </a>- {{ discussion.created_date|date:"jS F Y" }}</p>
+            <a href="{% url 'book-detail' discussion.book.id %}" class="title-link"><p class="m-0 block-content">{{ discussion.book.title }}</p></a>
+        </div>
+          <div class="container col-2 p-0 m-0 ml-2 border-left border-dark">
+              <p class="m-0 mt-3 p-0 text-center" style="font-weight: 500; font-size: 14px;">{{ discussion.reply_count }} replies</p>
+            </div>
+        </div>
+        </div>
+    </div>
+  {% endfor %}
+    </div>
+{% endblock content %}

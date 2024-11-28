@@ -1,0 +1,15 @@
+{% extends "user_base.html" %}
+{% block user_detail %}
+        <div class="container p-2">
+            <p class="m-0 block-title">About Me</p>
+            <div class="container p-0 border-top border-dark">
+            {% if user_profile.about %}
+            <div style="font-size: 13px;">
+                <p class="mt-2 block-content">{{ user_profile.about|linebreaks }}</p>
+            </div>
+            {% else %}
+            <p class="mt-2 block-content">No info added.</p>
+            {% endif %}
+            </div>
+        </div>
+{% endblock user_detail %}

@@ -1,0 +1,75 @@
+{% extends "books/book_base.html" %}
+{% load mathfilters %}
+{% block book_detail %}
+<div class="col-md-9 p-0 m-0">
+  <div class="container p-2">
+    <div class="d-flex border-bottom border-light">
+      <a href="{% url 'book-detail' book.id %}" class="detail-bar">Details</a>
+      <a href="{% url 'book-stats' book.id %}" class="detail-bar">Statistics</a>
+      <a href="{% url 'book-pictures' book.id %}" class="detail-bar">Pictures</a>
+      <a href="{% url 'book-characters' book.id %}" class="detail-bar">Characters</a>
+      <a href="{% url 'book-reviews' book.id %}" class="detail-bar">Reviews</a>
+      <a href="{% url 'book-recommendations' book.id %}" class="detail-bar">Recommendations</a>
+      <div class="detail-bar-selected">Discussions</div>
+    </div>
+  </div>
+  {% if discussions.count == 0 %}
+          <div class="container p-2">
+            <p class="block-content mt-1">No discussions yet.</p>
+          </div>
+    {% else %}
+    <div class="container p-2">
+        <div class="container p-0 m-0 d-flex justify-content-between">
+          <p class="m-0 block-title">Discussions</p>
+          <a href="{% url 'add-discussion' book.id %}" class="title-link mr-2" style="font-size: 13px;"><i class="fas fa-plus-circle"></i> Create a Discussion</a>
+        </div>
+        {% for discussion in discussions %}
+        <div class="container p-0 pt-2 pb-2 border-top border-dark">
+          <div class="container p-0 pt-2 pb-2">
+            <div class="row m-0 p-0">
+              <div class="col-1 m-0 p-0 mr-2 ">
+                  <img src="{{ book.cover.url }}" class="img-fluid" style="height: 45px; width:70px; object-fit: cover;" alt="{{ book.title }}">
+              </div>
+              <div class="col p-0 m-0">
+                <a href="{% url 'discussion-detail' book.id discussion.id %}" class="title-link p-0 m-0">
+                  <p class="m-0 block-content text-truncate" style="font-weight: 500; font-size: 14px;">{{ discussion.title }}</p>
+                </a>
+                <p class="m-0 block-content text-white" style="font-size: 10px;"><a href="{% url 'user-profile' discussion.user.id %}" class="title-link p-0 m-0"> {{discussion.user.username}} </a>- {{ discussion.created_date|date:"jS F Y" }}</p>
+              </div>
+              <div class="container col-2 p-0 m-0 ml-2 border-left border-dark">
+                  <p class="m-0 mt-2 p-0 text-center" style="font-weight: 500; font-size: 14px;">{{ discussion.reply_count }} replies</p>
+                </div>
+            </div>
+            </div>
+        </div>
+      {% endfor %}
+        </div>
+<div class="container mt-4">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if discussions.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ discussions.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            {% for num in discussions.paginator.page_range %}
+            {% if discussions.number == num %}
+            <li class="page-item active">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if discussions.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ discussions.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+{% endblock book_detail %}

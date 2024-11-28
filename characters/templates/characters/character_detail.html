@@ -1,0 +1,42 @@
+{% extends "books/base.html" %}
+{% block content %}
+  <div class="container p-0">
+    <div class="pl-2 pt-2 pb-2 border-bottom border-dark" style="background-color: #353535;">
+      <h5 class="m-0">{{ character.name }} 
+        {% if character.alias %}
+          <span style="font-weight: 300 !important;">({{ character.alias }})</span>
+        {% endif %}
+      </h5>
+  </div>
+  <div class="row m-0 p-0" style="height: 100vh;">
+    <div class="col-md-3 border-right border-dark p-0 m-0">
+      <div class="container m-0 p-2">
+        <img src="{{ character.image.url }}" class="img-fluid" style="height: 350px; object-fit: cover;" alt="{{ book.title }}">
+      </div>
+      <div class="container p-2">
+        <p class="m-0 block-title">Appears on</p>
+        <div class="container p-0 pt-2 border-top border-dark">
+          {% for character_book in character_books %}
+          <div class="container p-0 pt-2 pb-2">
+            <div class="row m-0 p-0">
+              <a href="{% url 'book-detail' character_book.book.id %}" class="title-link col-3 p-0 m-0"><img src="{{ character_book.book.cover.url }}" class="img-fluid" style="height: 70px; width:100%; object-fit: cover;" alt="{{ character_book.book.title }}"></a>
+              <div class="container col text-truncate">
+              <a href="{% url 'book-detail' character_book.book.id %}" class="title-link"><p class="m-0 block-content text-truncate">{{ character_book.book.title }}</p></a>
+              <p class="m-0 block-content" style="font-size: 10px;">{{ character_book.get_character_role_display }}</p>
+              </div>
+            </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9 p-0 m-0">
+      <div class="container p-2">
+        <p class="m-0 block-title">{{ character.name }}</p>
+        <div class="container p-0 border-top border-dark" style="font-size: 13px;">
+          <p class="mt-2 block-content">{{ character.description|linebreaks }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

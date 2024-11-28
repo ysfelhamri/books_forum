@@ -1,0 +1,183 @@
+{% extends "books/book_base.html" %}
+{% load mathfilters %}
+{% block book_detail %}
+<div class="col-md-9 p-0 m-0">
+  <div class="container p-2">
+    <div class="d-flex border-bottom border-light">
+      <a href="{% url 'book-detail' book.id %}" class="detail-bar">Details</a>
+      <div class="detail-bar-selected">Statistics</div>
+      <a href="{% url 'book-pictures' book.id %}" class="detail-bar">Pictures</a>
+      <a href="{% url 'book-characters' book.id %}" class="detail-bar">Characters</a>
+      <a href="{% url 'book-reviews' book.id %}" class="detail-bar">Reviews</a>
+      <a href="{% url 'book-recommendations' book.id %}" class="detail-bar">Recommendations</a>
+      <a href="{% url 'book-discussions' book.id %}" class="detail-bar">Discussions</a>
+    </div>
+  </div>
+  <div class="container p-2">
+    <p class="m-0 block-title">General Statistics</p>
+    <div class="container p-0 border-top border-dark">
+      <p class="mt-1 block-content"><span class="block-subtitle">Average Score: </span>{% if book_stats.average_score == 0 %}N/A{% else %}{{ book_stats.average_score }}{% endif %}</p>
+      <p class="block-content"><span class="block-subtitle">Total Members: </span>{% if book_stats.num_ratings == 0 %}N/A{% else %}{{ book_stats.num_ratings }}{% endif %}</p>
+      <p class="block-content"><span class="block-subtitle">Score Rank: </span>{% if book_stats.score_rank == 0 %}N/A{% else %}{{ book_stats.score_rank }}{% endif %}</p>
+      <p class="block-content"><span class="block-subtitle">Popularity Rank: </span>{% if book_stats.popularity_rank == 0 %}N/A{% else %}{{ book_stats.popularity_rank }}{% endif %}</p>
+    </div>
+  </div>
+  <div class="container p-2">
+    <p class="m-0 block-title">Users Scores Distribution</p>
+    <div class="container p-0 border-top border-dark">
+      {% if book_stats.score_distribution %}
+      <canvas id="scoreDistributionChart" width="300" height="300"></canvas>
+      {% else %}
+      <p class="block-content pt-2">No scores have been submitted for this book yet.</p>
+      {% endif %}
+    </div>
+  </div>
+  <div class="container p-2">
+    <p class="m-0 block-title">Users Current Status Distribution</p>
+    <div class="container p-0 border-top border-dark">
+      {% if book_stats.user_statuses %}
+      <canvas id="userStatusesChart" width="300" height="150"></canvas>
+      {% else %}
+      <p class="block-content pt-2">No scores have been submitted for this book yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Parse the JSON data passed from the view
+      const scoreDistribution = JSON.parse('{{ score_distribution|escapejs }}');
+      const userStatuses = JSON.parse('{{ user_statuses|escapejs }}');
+
+      // Define the score labels based on the SCORES enum
+      const SCORE_LABELS = [
+        '10',
+        '9',
+        '8',
+        '7',
+        '6',
+        '5',
+        '4',
+        '3',
+        '2',
+        '1'
+      ];
+
+      // Prepare data for Score Distribution Chart
+      const scoreLabels = SCORE_LABELS;
+      const scoreData = Array(SCORE_LABELS.length).fill(0);
+
+      // Map the scoreDistribution to the predefined labels
+      scoreDistribution.forEach(score => {
+        const index = SCORE_LABELS.length - score.score ; // Invert the index and start from 1
+        scoreData[index] = score.count;
+        console.log(scoreData);
+      });
+      // Create Score Distribution Chart (Inverted Bar Chart)
+      const ctxScore = document.getElementById('scoreDistributionChart').getContext('2d');
+      new Chart(ctxScore, {
+        type: 'bar',
+        data: {
+          labels: scoreLabels,
+          datasets: [{
+            data: scoreData,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'x', // Invert the bar chart
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1,
+                precision: 0 // Show only integer values on x-axis
+              }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1,
+                precision: 0 // Show only integer values on y-axis
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false // Hide legend for smaller charts
+            }
+          },
+          maintainAspectRatio: false, // Allow custom width and height
+          layout: {
+            padding: {
+                top: 20 // Set the left padding to 0 pixels
+            }
+          }
+        }
+      });
+
+      // Define the status labels based on the STATUS enum
+      const STATUS_LABELS = ['Reading', 'Completed', 'On-Hold', 'Dropped', 'Plan to Read'];
+
+      // Prepare data for User Statuses Chart
+      const statusLabels = STATUS_LABELS; // Use predefined labels
+      const statusData = Array(STATUS_LABELS.length).fill(0);
+
+      // Map the userStatuses to the predefined labels
+      userStatuses.forEach(status => {
+        const index = status.status; // Assuming status field in userStatuses is the index
+        statusData[index] = status.count;
+      });
+
+      // Create User Statuses Chart (Inverted Bar Chart)
+      const ctxStatus = document.getElementById('userStatusesChart').getContext('2d');
+      new Chart(ctxStatus, {
+        type: 'bar',
+        data: {
+          labels: statusLabels,
+          datasets: [{
+            data: statusData,
+            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'x', // Invert the bar chart
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1,
+                precision: 0 // Show only integer values on x-axis
+              }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1,
+                precision: 0 // Show only integer values on y-axis
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false // Hide legend for smaller charts
+            }
+          },
+          maintainAspectRatio: false, // Allow custom width and height
+          layout: {
+            padding: {
+              top: 20 // Set the left padding to 20 pixels
+            }
+          }
+        }
+      });
+    });
+  </script>
+
+{% endblock book_detail %}

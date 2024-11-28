@@ -1,0 +1,20 @@
+{% extends "books/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container pt-5" style="padding-right: 300px; padding-left: 300px; height: 100vh;">
+    <div class="pl-2 pt-2 pb-2 border border-bottom-0 border-dark" style="background-color: #353535;">
+        <h5 class="m-0 text-center">Log In</h5>
+    </div>
+    <div class="container p-5 border border-dark" style="background-color: #252525;">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary mt-3">Log In</button>
+            <p class="m-0 mt-3 text-center">Forgot your password? <a href="{% url 'password_reset' %}" class="title-link">Reset it here</a></p>
+        </form>
+    </div>
+    <div class="pl-2 pt-2 pb-2 border border-top-0 border-dark" style="background-color: #353535;">
+        <p class="m-0 text-center">Don't have an account? <a href="{% url 'signup' %}" class="title-link">Sign Up here</a></p>
+    </div>
+</div>
+{% endblock content %}

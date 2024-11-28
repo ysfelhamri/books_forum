@@ -1,0 +1,45 @@
+{% extends "books/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <div class="container p-0">
+    <div class="pl-2 pt-2 pb-2 border-bottom border-dark" style="background-color: #353535;">
+      <h5 class="m-0">Recent Reviews</h5>
+  </div>
+  <div class="container p-2">
+      {% for review in reviews %}
+        <div class="container p-0 pt-2 pb-2 border-top border-dark">
+          <div class="container p-0 pt-2 pb-2">
+            <div class="row m-0 p-0">
+              <div class="col-1 p-0 m-0">
+                <a href="{% url 'user-profile' review.user.id %}" class="title-link p-0 m-0">
+                  <img src="{{ review.user.image.url }}" class="img-fluid" style="height: 70px; width:100%; object-fit: cover;" alt="{{ review.user.username }}">
+                  <p class="m-0 block-content text-center">{{ review.user.username }}</p>
+                </a>
+                <p class="m-0 block-content text-center" style="font-size: 10px;">{{ review.created_date|date:"jS F Y" }}</p>
+              </div>
+              <div class="container col ml-2 pl-2 border-left border-dark">
+                <div class="container p-0 m-0 d-flex justify-content-between">
+                  {% if review.verdict == 0 %}
+                  <p class="m-0 badge badge-success">Recommended</p>
+                  {% elif review.verdict == 1 %}
+                  <p class="m-0 badge badge-warning text-white">Mixed Feelings</p>
+                  {% elif review.verdict == 2 %}
+                  <p class="m-0 badge badge-danger">Not Recommended</p>
+                  {% endif %}
+                  <a href="{% url 'book-detail' review.book.id %}" class="title-link"><p class="m-0 block-content">{{ review.book.title }}</p></a>
+                  <p class="m-0 block-content"><span class="block-subtitle">Chapters Read on Review: </span>{{ review.chapters_read_on_review }}/{{ review.book.chapters }}</p>
+                </div>
+                <div style="font-size: 13px;">
+                  <p class="m-0 mt-2 block-content">{{ review.review|linebreaks }}</p>
+                </div>
+                {% if review.user == user %}
+                <a href="{% url 'edit-review' review.book.id review.id %}" class="title-link m-0 float-right" style="font-size: 13px;">
+                  <i class="fas fa-edit"></i> Edit Review</a>
+                {% endif %}
+                </div>
+            </div>
+            </div>
+        </div>
+      {% endfor %}
+    </div> 
+{% endblock content %}

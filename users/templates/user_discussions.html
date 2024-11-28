@@ -1,0 +1,36 @@
+{% extends "user_base.html" %}
+{% block user_detail %}
+        <div class="container p-2">
+            <p class="m-0 block-title">{{ user_profile.username }}'s Discussions</p>
+            <div class="container p-0 border-top border-dark"></div>
+            {% if discussions.count == 0 %}
+            <div class="container p-0">
+                <p class="block-content mt-1">No discussions yet.</p>
+            </div>
+            {% else %}
+            <div class="container p-2">
+                {% for discussion in discussions %}
+                <div class="container p-0 pt-2 pb-2 border-bottom border-dark">
+                  <div class="container p-0 pt-2 pb-2">
+                    <div class="row m-0 p-0">
+                      <div class="col-1 m-0 p-0 mr-2 ">
+                          <img src="{{ discussion.book.cover.url }}" class="img-fluid" style="height: 60px; width:70px; object-fit: cover;" alt="{{ discussion.book.title }}">
+                      </div>
+                      <div class="col p-0 m-0">
+                        <a href="{% url 'discussion-detail' discussion.book.id discussion.id %}" class="title-link p-0 m-0">
+                          <p class="m-0 block-content text-truncate" style="font-weight: 500; font-size: 14px;">{{ discussion.title }}</p>
+                        </a>
+                        <p class="m-0 block-content text-white" style="font-size: 10px;"><a href="{% url 'user-profile' discussion.user.id %}" class="title-link p-0 m-0"> {{discussion.user.username}} </a>- {{ discussion.created_date|date:"jS F Y" }}</p>
+                        <a href="{% url 'book-detail' discussion.book.id %}" class="title-link"><p class="m-0 block-content">{{ discussion.book.title }}</p></a>
+                    </div>
+                      <div class="container col-2 p-0 m-0 ml-2 border-left border-dark">
+                          <p class="m-0 mt-3 p-0 text-center" style="font-weight: 500; font-size: 14px;">{{ discussion.reply_count }} replies</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+              {% endfor %}
+                </div>
+        </div>
+        {% endif %}
+{% endblock user_detail %}

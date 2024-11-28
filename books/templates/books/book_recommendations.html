@@ -1,0 +1,85 @@
+{% extends "books/book_base.html" %}
+{% load mathfilters %}
+{% block book_detail %}
+<div class="col-md-9 p-0 m-0">
+  <div class="container p-2">
+    <div class="d-flex border-bottom border-light">
+      <a href="{% url 'book-detail' book.id %}" class="detail-bar">Details</a>
+      <a href="{% url 'book-stats' book.id %}" class="detail-bar">Statistics</a>
+      <a href="{% url 'book-pictures' book.id %}" class="detail-bar">Pictures</a>
+      <a href="{% url 'book-characters' book.id %}" class="detail-bar">Characters</a>
+      <a href="{% url 'book-reviews' book.id %}" class="detail-bar">Reviews</a>
+      <div class="detail-bar-selected">Recommendations</div>
+      <a href="{% url 'book-discussions' book.id %}" class="detail-bar">Discussions</a>
+    </div>
+  </div>
+  {% if recommendations.count == 0 %}
+          <div class="container p-2">
+            <p class="block-content mt-1">No recommendations yet.</p>
+          </div>
+    {% else %}
+    <div class="container p-2">
+        <div class="container p-0 m-0 d-flex justify-content-between">
+          <p class="m-0 block-title">Recommendations</p>
+          <a href="{% url 'add-recommendation' book.id %}" class="title-link mr-2" style="font-size: 13px;"><i class="fas fa-plus-circle"></i> Write a Recommendation</a>
+        </div>
+          {% for recommendation in recommendations %}
+            <div class="container p-0 pt-2 pb-2 border-top border-dark">
+              <div class="container p-0 pt-2 pb-2">
+                <div class="row m-0 p-0">
+                  <div class="col-1 p-0 m-0">
+                    <a href="{% url 'user-profile' recommendation.user.id %}" class="title-link p-0 m-0">
+                      <img src="{{ recommendation.user.image.url }}" class="img-fluid" style="height: 70px; width:100%; object-fit: cover;" alt="{{ recommendation.user.username }}">
+                      <p class="m-0 block-content text-center">{{ recommendation.user.username }}</p>
+                    </a>
+                    <p class="m-0 block-content text-center" style="font-size: 10px;">{{ recommendation.created_date|date:"jS F Y" }}</p>
+                  </div>
+                  <div class="container col ml-2 pl-2 border-left border-dark">
+                    <div class="row m-0 p-0">
+                      <a href="{% url 'book-detail' recommendation.book_recommended.id %}" class="title-link col-1 p-0 m-0"><img src="{{ recommendation.book_recommended.cover.url }}" class="img-fluid" style="height: 70px; object-fit: cover;" alt="{{ author_book.book.title }}"></a>
+                      <div class="container col">
+                      <a href="{% url 'book-detail' recommendation.book_recommended.id %}" class="title-link"><p class="m-0 block-content">{{ recommendation.book_recommended.title }}</p></a>
+                      <div style="font-size: 13px;">
+                        <p class="m-0 mt-2 pt-2 block-content border-top border-dark">{{ recommendation.recommendation|linebreaks }}</p>
+                      </div>
+                    </div>
+                    </div>
+                    {% if recommendation.user == user %}
+                    <a href="{% url 'edit-recommendation' book.id recommendation.id %}" class="title-link m-0 float-right" style="font-size: 13px;">
+                    <i class="fas fa-edit"></i> Edit Recommendation</a>
+                    {% endif %}
+                    </div>
+                </div>
+                </div>
+            </div>
+          {% endfor %}
+        </div>
+<div class="container mt-4">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if recommendations.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ recommendations.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            {% for num in recommendations.paginator.page_range %}
+            {% if recommendations.number == num %}
+            <li class="page-item active">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if recommendations.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ recommendations.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+{% endblock book_detail %}
