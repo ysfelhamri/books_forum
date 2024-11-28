@@ -1,0 +1,548 @@
+html{
+  height: 100%;
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+body {
+  font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  background-color: #151515;
+  color: #f8f9fa;
+  padding: 0 225px;
+  height: 100%;
+  min-height: 100%;
+}
+p {
+  font-weight: 300;
+}
+.navbar .nav-link {
+  font-size: 14px;
+}
+.navbar .navbar-brand {
+  font-size: 16px;
+  font-weight: 500;
+}
+.navbar .form-control::placeholder {
+  color: #bfbfbf;
+}
+.secondary-nav:hover {
+  background-color: #353535;
+}
+.primary-nav:hover {
+  opacity: 0.8;
+}
+.card {
+  background-color: #353535; /* Dark background for cards */
+  border: 1px solid #444; /* Slightly lighter border */
+  color: #e0e0e0; /* Light text color for card text */
+  transition: transform 0.2s; /* Smooth scaling effect */
+  height: 425px; /* Fixed card height */
+  width: 100%; /* Full width of the column */
+  display: flex;
+  flex-direction: column; /* Ensure the card’s content stacks vertically */
+  overflow: hidden; /* Hide overflow to maintain card shape */
+  text-decoration: none; /* Remove underline from links */
+  position: relative; /* Position relative to place overlay */
+  border-radius: 0;
+  
+}
+.card-img-top {
+  width: 100%; /* Ensure the image fills the entire width */
+  height: 100%; /* Ensure the image fills the entire height */
+  object-fit: cover ; /* Ensure the image covers the card area */
+  object-position: top;
+  display: block; /* Remove bottom margin/padding */
+  border-radius: 0;
+}
+.card-body {
+  position: relative; /* Position relative to allow absolute positioning of title */
+  flex: 1; /* Allow the card body to take up remaining space */
+  padding: 0; /* Remove default padding */
+  border-radius: 0;
+}
+.card-synopsis-container {
+  position: absolute; /* Position synopsis overlay */
+  bottom: 0; /* Stick to the bottom of the card */
+  left: 0;
+  right: 0;
+  background: #252525; /* Fading gradient background */
+  color: #ffffff; /* White color for card synopsiss */
+  padding: 10px;
+  text-align: center; /* Center align the synopsis */
+  opacity: 0;/* Hide the overlay by default */
+  border-radius: 0;
+  transform: translateY(100%); /* Start below the card */
+  transition: opacity 0.5s ease, transform 0.5s ease; /
+}
+.card:hover .card-synopsis-container {
+  opacity: 1;
+  transform: translateY(0); 
+}
+.card-synopsis {
+  margin-bottom: 0; /* Remove default margin */
+  overflow: hidden; /* Hide overflow text */
+  display: -webkit-box; /* Enable flexbox layout for truncation */
+  -webkit-box-orient: vertical; /* Set the box orientation to vertical */
+  -webkit-line-clamp: 5; /* Limit the text to 2 lines */
+  line-height: 1.2; /* Adjust line height */
+  height: 100%;/* Maximum height based on line height and line clamp */
+  text-overflow: ellipsis; /* Add ellipsis for truncated text */
+  padding: 0 10px; /* Add padding to match container */
+  text-align: left; /* Align text to the left */
+}
+.card-link {
+  text-decoration: none; /* Remove default link styles */
+  color: inherit; /* Inherit text color from parent */
+}
+.row {
+  margin-left: -15px; /* Adjust margin for proper spacing */
+  margin-right: -15px; /* Adjust margin for proper spacing */
+}
+.col-md-3 {
+  padding-left: 15px; /* Add padding to the left of columns */
+  padding-right: 15px; /* Add padding to the right of columns */
+}
+.border-dark {
+  border-color: #444 !important;  /* Dark border color */
+}
+.title-link:hover {
+/* Light text color on hover */
+  text-decoration: none;
+}
+.block-title {
+  font-size: 15px; /* Large title font size */
+  font-weight: 500; /* Medium title font weight */
+}
+.block-subtitle {
+  color:#a9a9a9; /* Light subtitle color */
+  font-weight: 500; /* Light subtitle font weight */
+}
+.block-content{
+  font-size: 13px; /* Small subtitle font size */
+  font-weight: 300; /* Light subtitle font weight */
+  margin-bottom: 0.35rem;
+}
+.card-info {
+  font-size: 13px;
+}
+body::-webkit-scrollbar {
+  width: 12px;               /* width of the entire scrollbar */
+}
+body::-webkit-scrollbar-track {
+  background: #252525;        /* color of the tracking area */
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #454545;    /* color of the scroll thumb */     /* roundness of the scroll thumb */  /* creates padding around scroll thumb */
+}
+.btn-primary{
+  background-color: #5f63d4;
+  width: 100%;
+}
+.btn-primary:hover{
+  background-color: #4f53b4;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  left: 0;
+  background-color: #454545;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  padding:0;
+  opacity: 0;
+  width: max-content;
+}
+.dropdown {
+  position: relative;
+}
+.dropdown-content button {
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  padding: 12px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+}
+.dropdown-content a {
+  color: white;
+  padding: 12px;
+  text-decoration: none;
+  font-size: 14px;
+  display: block;
+}
+.dropdown-content a:hover, button:hover {
+  background-color: #353535;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+  opacity: 1;
+  transition: opacity 0.5s ease; 
+}
+.dropdown:hover .username {
+  color: #aeaeae !important;
+}
+/* Select2 container */
+.select2-container .select2-selection--single {
+  background-color: #353535;
+  border: 1px solid #444;
+  color: #e0e0e0;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+  color: #e0e0e0;
+}
+
+.select2-container .select2-selection--single .select2-selection__arrow {
+  background-color: #444;
+  border-left: 1px solid #444;
+}
+
+/* Dropdown */
+.select2-container .select2-dropdown {
+  background-color: #353535;
+  border: 1px solid #444;
+  color: #e0e0e0;
+}
+
+/* Search box */
+.select2-container .select2-search--dropdown .select2-search__field {
+  background-color: #444;
+  border: 1px solid #555;
+  color: #e0e0e0;
+}
+
+/* Results */
+.select2-container .select2-results__option {
+  background-color: #353535;
+  color: #e0e0e0;
+}
+
+.select2-container .select2-results__option--highlighted {
+  background-color: #444;
+  color: #e0e0e0;
+}
+
+.img-fluid {
+  width: 100%;
+  object-position: top;
+}
+
+.detail-bar {
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: #a9a9a9;
+  text-decoration: none;
+  background-color: #151515;
+  font-size: 13px;
+  margin: 0.2rem;
+  margin-left: 0;
+  padding: 0.2em;
+}
+.detail-bar-selected {
+  background-color: white;
+  color:#151515;
+  font-size: 13px;
+  margin: 0.2rem;
+  margin-left: 0;
+  padding: 0.2em;
+}
+.detail-bar:hover {
+  background-color: white;
+  text-decoration: none;
+  color:#151515;
+}
+/* Dark mode pagination styling */
+.pagination {
+  background-color: #151515; /* Dark background for the pagination container */
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.page-item {
+  margin: 0 5px;
+}
+
+.page-item a.page-link {
+  background-color: #252525; /* Background color for unselected page numbers */
+  color: #e0e0e0; /* Light text color */
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.page-item a.page-link:hover {
+  background-color: #353535; /* Slightly lighter background color on hover */
+}
+
+.page-item.active a.page-link {
+  background-color: #5f63d4; /* Background color for selected page number */
+  color: #ffffff; /* White text color for selected page number */
+}
+
+.page-item.disabled a.page-link {
+  background-color: #202020; /* Same background color for disabled previous/next buttons */
+  color: #666666; /* Disabled text color */
+  pointer-events: none; /* Prevent clicking on disabled buttons */
+}
+
+/* General form styling */
+.form-control {
+  background-color: #202020; /* Dark background color */
+  border: 1px solid #444; /* Bootstrap border-dark color */
+  color: #ffffff; /* White text color for contrast */
+  border-radius: 0; /* No rounded corners */
+}
+
+/* Focus state for form fields */
+.form-control:focus {
+  background-color: #202020; /* Keep dark background on focus *//* Highlight border color on focus */
+  color: #ffffff; /* White text color */ 
+  border-color: #5f63d4; /* Highlight border color on focus */
+}
+
+/* Styling for form labels */
+.form-group label {
+  color: #ffffff; /* White text color for labels */
+}
+
+/* Styling for form buttons */
+.btn {
+  background-color: #5f63d4; /* Blue color for buttons */
+  color: #ffffff; /* White text color for buttons */
+  border: 1px solid transparent; /* Transparent border by default */
+}
+
+.btn:hover {
+  background-color: #4e54e8; /* Darker blue color on hover */
+  border-color: #4e54e8; /* Darker blue border on hover */
+}
+
+/* Optional: styling for form groups (to add spacing) */
+.form-group {
+  margin-bottom: 1rem; /* Adjust spacing between form groups as needed */
+}
+
+/* Dark mode styling for select2 container */
+.select2-container--default .select2-selection--single {
+  background-color: #202020 !important; /* Dark background color */
+  border: 1px solid #444 !important; /* Darker border color */
+  color: #ffffff !important; /* White text color */
+  border-radius: 0 !important; /* No rounded corners */
+}
+
+/* Dark mode styling for select2 dropdown */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: #ffffff !important; /* White text color */
+  background-color: #202020 !important; /* Dark background color */
+}
+
+/* Dark mode styling for select2 dropdown arrow */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  background-color: #202020 !important; /* Dark background color */
+  border: 1px solid #444 !important; /* Darker border color */
+  border-radius: 0 !important; /* No rounded corners */
+}
+
+/* Dark mode styling for select2 dropdown menu */
+.select2-container--default .select2-results {
+  background-color: #202020 !important; /* Dark background color */
+  border: 1px solid #444 !important; /* Darker border color */
+  color: #ffffff !important; /* White text color */
+}
+
+/* Dark mode styling for select2 options */
+.select2-container--default .select2-results__option {
+  color: #ffffff !important; /* White text color */
+  background-color: #202020 !important; /* Dark background color */
+}
+
+/* Dark mode styling for selected option in dropdown */
+.select2-container--default .select2-results__option--selected {
+  background-color: #5f63d4 !important; /* Blue color for selected option */
+  color: #ffffff !important; /* White text color */
+}
+
+/* Dark mode styling for hover state of options */
+.select2-container--default .select2-results__option--highlighted {
+  background-color: #5f63d4 !important; /* Blue color for highlighted option */
+  color: #ffffff !important; /* White text color */
+}
+
+/* Dark mode styling for disabled state of options */
+.select2-container--default .select2-results__option--disabled {
+  color: #6c757d !important; /* Bootstrap disabled color */
+  background-color: #202020 !important; /* Dark background color */
+}
+
+.form-control,
+.form-control:focus,
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-results__option {
+    font-size: 13px !important; /* Set text size to 13px */
+}
+
+/* Optional: Adjust the text size for select2 dropdown items */
+.select2-container--default .select2-results__option {
+    font-size: 13px !important; /* Set text size to 13px */
+}
+legend {
+  font-size: 15px !important; /* Set text size to 15px */
+}
+
+.small-input {
+  height: 30px; /* Adjust height as needed */
+  width: 125px; /* Adjust width as needed */
+  padding: 0px; 
+  margin-right: 0.2rem;/* Adjust padding as needed */
+  font-size: 13px; /* Adjust font size as needed */
+  background-color: #353535;
+}
+
+.wrapper-d{
+  height: 100%;
+  margin-right: 0.2rem;
+}
+
+.footer {
+  flex-shrink: 0;
+  background-color: #151515;
+  color: #ffffff;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.custom-input {
+  color: white;
+  font-size: 12px;
+  font-weight: 300;
+}
+.input-invis{
+  background-color: #353535;
+  border: none;
+  outline: none;
+  color: #5f63d4;
+  text-align: right; 
+  font-size: 13px;
+  margin-right: 0.1rem !important;
+  padding: 0;
+}
+.input-invis:focus{
+  background-color: #252525;
+  border: 1px solid #444;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.score {
+  font-size: 30px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.btn-danger {
+  background-color: #d9534f !important;
+  border: 1px solid #d9534f !important;
+  width: 100%;
+}
+
+.btn-danger:hover {
+  background-color: #c24844 !important;
+  border: 1px solid #c24844 !important;
+}
+
+/* Style for file input */
+.form-control-file {
+  background-color: #202020; /* Dark background color */
+  border: 1px solid #444; /* Dark border color */
+  color: #ffffff; /* White text color */
+  border-radius: 0; /* No rounded corners */
+  padding: 0.375rem 0.75rem; /* Add padding to match other form controls */
+  font-size: 0.875rem; /* Match font size with other form controls */
+  cursor: pointer; /* Pointer cursor to indicate interactivity */
+}
+
+.form-control-file:focus {
+  background-color: #202020; /* Keep dark background on focus */
+  color: #ffffff; /* White text color */
+  border-color: #5f63d4; /* Highlight border color on focus */
+  outline: none; /* Remove default focus outline */
+}
+
+/* Hide default file input label */
+.form-control-file::file-selector-button {
+  background-color: #5f63d4; /* Background color of the button */
+  color: #ffffff; /* Text color of the button */
+  border: 1px solid #444; /* Border color of the button */
+  border-radius: 0; /* No rounded corners */
+  padding: 0.375rem 0.75rem; /* Padding of the button */
+  font-size: 0.875rem; /* Font size of the button */
+  cursor: pointer; /* Pointer cursor */
+}
+
+#query + .select2-container .select2-selection__arrow {
+  display: none;
+}
+
+/* Adjust the padding to align text properly */
+#query + .select2-container .select2-selection__rendered {
+  padding-right: 0 !important; /* Remove right padding */
+}
+
+/* Style the Select2 selection */
+#query + .select2-container .select2-selection--single {
+  background-color: #151515;
+  border: 0; /* Remove border */
+  color: #ffffff;
+  border-radius: 0.25rem 0 0 0.25rem !important; /* Apply rounded-left styling */
+  height: 100%; /* Match the height */
+  width: 300px; /* Match the width */
+  font-size: 12px; /* Match the font size */
+  outline: none;
+  box-shadow: none;
+}
+
+/* Style the Select2 search input */
+#query + .select2-container .select2-search--dropdown .select2-search__field {
+  background-color: #151515;
+  border: 0;
+  color: #ffffff;
+  border-radius: 0;
+  height: 100%; /* Match the height */
+  width: 300px; /* Match the width */
+  font-size: 12px; /* Match the font size */
+  outline: none;
+  box-shadow: none;
+}
+
+/* Adjust the dropdown styles */
+#query + .select2-container--default .select2-results__option--highlighted[aria-selected] {
+  background-color: #5f63d4;
+  color: #ffffff;
+}
+
+#query + .select2-container .select2-dropdown {
+  background-color: #151515;
+  border: 1px solid #444;
+  color: #ffffff;
+}
+
+#query + .select2-container .select2-results__option {
+  background-color: #151515;
+  color: #ffffff;
+}
